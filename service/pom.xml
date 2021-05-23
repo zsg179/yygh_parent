@@ -16,16 +16,17 @@
     </modules>
 
     <dependencies>
-        <!--<dependency>
-            <groupId>com.atguigu.yygh</groupId>
-            <artifactId>service-util</artifactId>
-            <version>1.0</version>
+        <dependency>
+            <groupId>com.atguigu</groupId>
+            <artifactId>service_util</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>com.atguigu.yygh</groupId>
+            <groupId>com.atguigu</groupId>
             <artifactId>model</artifactId>
-            <version>1.0</version>
-        </dependency>-->
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
         <!--web-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
