@@ -25,6 +25,7 @@ import java.util.Random;
 @Api(tags = "医院设置管理")
 @RestController
 @RequestMapping("/admin/hosp/hospitalSet")
+@CrossOrigin
 public class HospitalSetController {
 
     @Autowired
@@ -80,6 +81,13 @@ public class HospitalSetController {
         return Result.fail();
     }
 
+    @ApiOperation("查询医院设置")
+    @GetMapping("/getHospSet/{id}")
+    public Result getHospSet(@PathVariable("id") Long id) {
+        HospitalSet hospitalSet = hospitalSetService.getById(id);
+        return Result.ok(hospitalSet);
+    }
+
     @ApiOperation("修改医院设置")
     @PutMapping("/updateHospitalSet")
     public Result updateHospitalSet(@RequestBody HospitalSet hospitalSet) {
@@ -88,5 +96,31 @@ public class HospitalSetController {
             return Result.ok();
         }
         return Result.fail();
+    }
+
+    @ApiOperation("批量删除医院设置")
+    @DeleteMapping("/batchRemove")
+    public Result batchRemoveHospitalSet(@RequestBody List<Long> ids) {
+        hospitalSetService.removeByIds(ids);
+        return Result.ok();
+    }
+
+    @ApiOperation("医院设置锁定何解锁")
+    @PutMapping("/lockHospitalSet/{id}/{status}")
+    public Result lockHospitalSet(@PathVariable("id") Long id, @PathVariable("status") Integer status) {
+        HospitalSet hospitalSet = hospitalSetService.getById(id);
+        hospitalSet.setStatus(status);
+        hospitalSetService.updateById(hospitalSet);
+        return Result.ok();
+    }
+
+    @ApiOperation("发送签名密钥")
+    @PutMapping("/sendKey/{id}")
+    public Result lockHospitalSet(@PathVariable("id") Long id) {
+        HospitalSet hospitalSet = hospitalSetService.getById(id);
+        String hoscode = hospitalSet.getHoscode();
+        String signKey = hospitalSet.getSignKey();
+        //TODO 发送短信
+        return Result.ok();
     }
 }
