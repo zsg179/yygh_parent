@@ -9,12 +9,13 @@ import com.atguigu.yygh.vo.cmn.DictEeVo;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.BeanUtils;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +26,8 @@ import java.util.List;
  */
 @Service
 public class DictServiceImpl extends ServiceImpl<DictMapper, Dict> implements DictService {
+
+    @Cacheable(value = "dict",keyGenerator = "keyGenerator")
     @Override
     public List<Dict> findChildData(Long id) {
         QueryWrapper<Dict> wrapper = new QueryWrapper<Dict>().eq("parent_id", id);
@@ -42,7 +45,7 @@ public class DictServiceImpl extends ServiceImpl<DictMapper, Dict> implements Di
         response.setCharacterEncoding("utf-8");
         // 这里URLEncoder.encode可以防止中文乱码
         String fileName = URLEncoder.encode("数据字典", "UTF-8");
-        response.setHeader("Content-disposition", "attachment;filename="+ fileName + ".xlsx");
+        response.setHeader("Content-disposition", "attachment;filename=" + fileName + ".xlsx");
         List<Dict> dictList = baseMapper.selectList(null);
         List<DictEeVo> dictEeVoList = new ArrayList<>();
         for (Dict dict : dictList) {
@@ -55,9 +58,10 @@ public class DictServiceImpl extends ServiceImpl<DictMapper, Dict> implements Di
                 .doWrite(dictEeVoList);
     }
 
+    @CacheEvict(value = "dict", allEntries = true)
     @Override
     public void importData(MultipartFile file) throws IOException {
-        EasyExcel.read(file.getInputStream(), DictEeVo.class,new DictListener(baseMapper)).sheet().doRead();
+        EasyExcel.read(file.getInputStream(), DictEeVo.class, new DictListener(baseMapper)).sheet().doRead();
     }
 
 
