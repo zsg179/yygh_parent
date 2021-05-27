@@ -21,4 +21,11 @@ public class GlobalExceptionHandler {
         e.printStackTrace();
         return Result.fail();
     }
+
+    @ExceptionHandler(YyghException.class)
+    @ResponseBody
+    public Result error(YyghException e) {
+        e.printStackTrace();
+        return Result.fail();
+    }
 }
