@@ -27,7 +27,7 @@ import java.util.List;
 @Service
 public class DictServiceImpl extends ServiceImpl<DictMapper, Dict> implements DictService {
 
-    @Cacheable(value = "dict",keyGenerator = "keyGenerator")
+    @Cacheable(value = "dict", keyGenerator = "keyGenerator")
     @Override
     public List<Dict> findChildData(Long id) {
         QueryWrapper<Dict> wrapper = new QueryWrapper<Dict>().eq("parent_id", id);
@@ -62,6 +62,38 @@ public class DictServiceImpl extends ServiceImpl<DictMapper, Dict> implements Di
     @Override
     public void importData(MultipartFile file) throws IOException {
         EasyExcel.read(file.getInputStream(), DictEeVo.class, new DictListener(baseMapper)).sheet().doRead();
+    }
+
+    @Override
+    public String getDictName(String dictCode, String value) {
+        if (dictCode.equals("")) {
+            //通过value查询
+            QueryWrapper<Dict> wrapper = new QueryWrapper<>();
+            wrapper.eq("value", value);
+            Dict dict = baseMapper.selectOne(wrapper);
+            return dict.getName();
+        } else {
+
+            Long parentId = getDictByDictCode(dictCode).getId();
+            QueryWrapper<Dict> wrapper = new QueryWrapper<>();
+            wrapper.eq("parent_id", parentId).eq("value", value);
+            Dict dict = baseMapper.selectOne(wrapper);
+            return dict.getName();
+        }
+    }
+
+    @Override
+    public List<Dict> findByDictCode(String dictCode) {
+        Dict dict = this.getDictByDictCode(dictCode);
+        List<Dict> list = this.findChildData(dict.getId());
+        return list;
+    }
+
+    private Dict getDictByDictCode(String dictCode) {
+        QueryWrapper<Dict> wrapper = new QueryWrapper<>();
+        wrapper.eq("dict_code", dictCode);
+        Dict dict = baseMapper.selectOne(wrapper);
+        return dict;
     }
 
 
