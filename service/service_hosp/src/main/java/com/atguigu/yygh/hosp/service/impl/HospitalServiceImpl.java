@@ -68,7 +68,7 @@ public class HospitalServiceImpl implements HospitalService {
         Example<Hospital> example = Example.of(hospital, matcher);
         Page<Hospital> pages = hospitalRepository.findAll(example, pageable);
 
-        pages.getContent().stream().forEach(item->{
+        pages.getContent().stream().forEach(item -> {
             this.setHospitalHosType(item);
         });
         return pages;
@@ -90,6 +90,15 @@ public class HospitalServiceImpl implements HospitalService {
         result.put("bookingRule", hospital.getBookingRule());
         hospital.setBookingRule(null);
         return result;
+    }
+
+    @Override
+    public String getName(String hoscode) {
+        Hospital hospital = hospitalRepository.getHospitalByHoscode(hoscode);
+        if (hospital != null) {
+            return hospital.getHosname();
+        }
+        return null;
     }
 
     private Hospital setHospitalHosType(Hospital hospital) {
