@@ -37,8 +37,11 @@ public class MsmApiController {
             return Result.ok();
         }
         //生成验证码
-        code = RandomUtil.getSixBitRandom();
-        boolean isSend = msmService.send(phone, code);
+        //code = RandomUtil.getSixBitRandom();
+        //boolean isSend = msmService.send(phone, code);
+        //未开通阿里云短信，模拟生成短信验证码
+        code = "123456";
+        boolean isSend = true;
         if (isSend) {
             redisTemplate.opsForValue().set(phone, code, 2L, TimeUnit.MINUTES);
             return Result.ok();
