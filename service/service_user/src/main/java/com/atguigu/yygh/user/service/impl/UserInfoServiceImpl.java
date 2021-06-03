@@ -25,7 +25,9 @@ import java.util.Map;
 public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> implements UserInfoService {
 
     @Autowired
-    private RedisTemplate<String,String> redisTemplate;
+    private RedisTemplate<String, String> redisTemplate;
+    @Autowired
+    private UserInfoService userInfoService;
 
     @Override
     public Map<String, Object> login(LoginVo loginVo) {
@@ -41,15 +43,27 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
             throw new YyghException(ResultCodeEnum.CODE_ERROR);
         }
 
-        //判断是否是第一次登录
-        QueryWrapper<UserInfo> wrapper = new QueryWrapper<UserInfo>().eq("phone", phone);
-        UserInfo userInfo = baseMapper.selectOne(wrapper);
-        if (userInfo == null) {
-            userInfo = new UserInfo();
-            userInfo.setName("");
+        //绑定手机号
+        UserInfo userInfo = null;
+        if (StringUtils.isNotBlank(loginVo.getOpenid())) {
+            userInfo = userInfoService.selectUserInfoByOpenId(loginVo.getOpenid());
             userInfo.setPhone(phone);
-            userInfo.setStatus(1);
-            baseMapper.insert(userInfo);
+            this.updateById(userInfo);
+        } else {
+            throw new YyghException(ResultCodeEnum.DATA_ERROR);
+        }
+
+        if (userInfo == null) {
+            //判断是否是第一次登录
+            QueryWrapper<UserInfo> wrapper = new QueryWrapper<UserInfo>().eq("phone", phone);
+            userInfo = baseMapper.selectOne(wrapper);
+            if (userInfo == null) {
+                userInfo = new UserInfo();
+                userInfo.setName("");
+                userInfo.setPhone(phone);
+                userInfo.setStatus(1);
+                baseMapper.insert(userInfo);
+            }
         }
         //是否被禁用
         if (userInfo.getStatus() == 0) {
@@ -70,5 +84,13 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         String token = JwtHelper.createToken(userInfo.getId(), name);
         map.put("token", token);
         return map;
+    }
+
+    @Override
+    public UserInfo selectUserInfoByOpenId(String openid) {
+        QueryWrapper<UserInfo> wrapper = new QueryWrapper<>();
+        wrapper.eq("openid", openid);
+        UserInfo userInfo = baseMapper.selectOne(wrapper);
+        return userInfo;
     }
 }
