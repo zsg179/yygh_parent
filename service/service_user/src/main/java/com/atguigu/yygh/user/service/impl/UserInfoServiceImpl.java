@@ -10,6 +10,8 @@ import com.atguigu.yygh.vo.user.LoginVo;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -22,6 +24,9 @@ import java.util.Map;
 @Service
 public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> implements UserInfoService {
 
+    @Autowired
+    private RedisTemplate<String,String> redisTemplate;
+
     @Override
     public Map<String, Object> login(LoginVo loginVo) {
         String phone = loginVo.getPhone();
@@ -30,7 +35,11 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         if (StringUtils.isBlank(phone) || StringUtils.isBlank(code)) {
             throw new YyghException(ResultCodeEnum.PARAM_ERROR);
         }
-        //TODO 判断验证码是否正确
+        //判断验证码是否正确
+        String codeJson = redisTemplate.opsForValue().get(phone);
+        if (!code.equals(codeJson)) {
+            throw new YyghException(ResultCodeEnum.CODE_ERROR);
+        }
 
         //判断是否是第一次登录
         QueryWrapper<UserInfo> wrapper = new QueryWrapper<UserInfo>().eq("phone", phone);
