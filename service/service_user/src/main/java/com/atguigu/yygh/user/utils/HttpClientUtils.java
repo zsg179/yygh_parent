@@ -2,10 +2,7 @@ package com.atguigu.yygh.user.utils;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.Consts;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
+import org.apache.http.*;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -216,6 +213,8 @@ public class HttpClientUtils {
             if (readTimeout != null) {
                 customReqConf.setSocketTimeout(readTimeout);
             }
+            //设置代理
+            customReqConf.setProxy(new HttpHost("10.26.140.225", 8080));
             get.setConfig(customReqConf.build());
 
             HttpResponse res = null;
