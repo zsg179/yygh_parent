@@ -24,4 +24,6 @@ public interface DepartmentService {
     List<DepartmentVo> getDeptList(String hoscode);
 
     String getDepName(String hoscode, String depcode);
+
+    Department getDepartment(String hoscode, String depcode);
 }

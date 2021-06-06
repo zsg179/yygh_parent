@@ -1,4 +1,4 @@
-package com.atguigu.yygh.user.controller.api;
+package com.atguigu.yygh.user.api;
 
 import com.alibaba.fastjson.JSONObject;
 import com.atguigu.yygh.common.helper.JwtHelper;
