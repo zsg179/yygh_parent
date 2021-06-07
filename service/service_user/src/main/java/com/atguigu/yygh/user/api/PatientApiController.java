@@ -63,5 +63,12 @@ public class PatientApiController {
         return Result.ok();
     }
 
+    @ApiOperation("获取就诊人信息")
+    @GetMapping("inner/get/{id}")
+    public Patient getPatientOrder(@PathVariable("id") Long id) {
+        Patient patient = patientService.getById(id);
+        return patient;
+    }
+
 
 }

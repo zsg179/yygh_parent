@@ -214,7 +214,7 @@ public class HttpClientUtils {
                 customReqConf.setSocketTimeout(readTimeout);
             }
             //设置代理
-//            customReqConf.setProxy(new HttpHost("10.26.140.225", 8080));
+            customReqConf.setProxy(new HttpHost("10.26.140.225", 8080));
             get.setConfig(customReqConf.build());
 
             HttpResponse res = null;
