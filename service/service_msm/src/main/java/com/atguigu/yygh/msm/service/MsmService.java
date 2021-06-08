@@ -1,5 +1,7 @@
 package com.atguigu.yygh.msm.service;
 
+import com.atguigu.yygh.vo.msm.MsmVo;
+
 /**
  * @Auther :朱树广
  * @Date :2021/6/2
@@ -8,4 +10,6 @@ package com.atguigu.yygh.msm.service;
  */
 public interface MsmService {
     boolean send(String phone, String code);
+
+    boolean send(MsmVo msmVo);
 }
