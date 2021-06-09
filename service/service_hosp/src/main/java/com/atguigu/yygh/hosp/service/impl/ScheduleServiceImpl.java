@@ -308,6 +308,12 @@ public class ScheduleServiceImpl extends
         return scheduleOrderVo;
     }
 
+    @Override
+    public void update(Schedule schedule) {
+        schedule.setUpdateTime(new Date());
+        scheduleRepository.save(schedule);
+    }
+
     //获取可预约日期的数据（分页）
     private IPage getListDate(Integer page, Integer limit, BookingRule bookingRule) {
         //获取当天可放号时间

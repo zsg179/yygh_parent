@@ -30,4 +30,9 @@ public interface ScheduleService {
     Schedule getById(String scheduleId);
 
     ScheduleOrderVo getScheduleOrderVo(String scheduleId);
+
+    /**
+     * 修改排班
+     */
+    void update(Schedule schedule);
 }
