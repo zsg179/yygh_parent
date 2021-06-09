@@ -5,6 +5,7 @@ import com.atguigu.yygh.common.utils.AuthContextHolder;
 import com.atguigu.yygh.enums.OrderStatusEnum;
 import com.atguigu.yygh.model.order.OrderInfo;
 import com.atguigu.yygh.order.service.OrderService;
+import com.atguigu.yygh.order.service.WeixinService;
 import com.atguigu.yygh.vo.order.OrderQueryVo;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 /**
  * @author zhusg02
@@ -26,6 +28,8 @@ import javax.servlet.http.HttpServletRequest;
 public class OrderApiController {
     @Autowired
     private OrderService orderService;
+    @Autowired
+    private WeixinService weixinService;
 
     @ApiOperation(value = "创建订单")
     @PostMapping("auth/submitOrder/{scheduleId}/{patientId}")
@@ -61,4 +65,14 @@ public class OrderApiController {
     public Result getStatusList() {
         return Result.ok(OrderStatusEnum.getStatusList());
     }
+
+    @ApiOperation("下单,生成二维码")
+    @GetMapping("/createNative/{orderId}")
+    public Result createNative(
+            @ApiParam(name = "orderId", value = "订单id", required = true)
+            @PathVariable("orderId") Long orderId) {
+        Map map = weixinService.createNative(orderId);
+        return Result.ok(map);
+    }
+
 }
