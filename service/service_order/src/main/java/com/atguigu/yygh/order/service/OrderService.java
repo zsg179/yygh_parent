@@ -1,10 +1,13 @@
 package com.atguigu.yygh.order.service;
 
 import com.atguigu.yygh.model.order.OrderInfo;
+import com.atguigu.yygh.vo.order.OrderCountQueryVo;
 import com.atguigu.yygh.vo.order.OrderQueryVo;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+
+import java.util.Map;
 
 /**
  * @author zhusg02
@@ -16,4 +19,8 @@ public interface OrderService extends IService<OrderInfo> {
     OrderInfo getOrder(String orderId);
 
     IPage<OrderInfo> selectPage(Page<OrderInfo> pageParam, OrderQueryVo orderQueryVo);
+
+    void patientTips();
+
+    Map<String, Object> getCountMap(OrderCountQueryVo orderCountQueryVo);
 }

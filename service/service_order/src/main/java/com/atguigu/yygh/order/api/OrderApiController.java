@@ -2,10 +2,10 @@ package com.atguigu.yygh.order.api;
 
 import com.atguigu.yygh.common.result.Result;
 import com.atguigu.yygh.common.utils.AuthContextHolder;
-import com.atguigu.yygh.enums.OrderStatusEnum;
 import com.atguigu.yygh.model.order.OrderInfo;
 import com.atguigu.yygh.order.service.OrderService;
 import com.atguigu.yygh.order.service.WeixinService;
+import com.atguigu.yygh.vo.order.OrderCountQueryVo;
 import com.atguigu.yygh.vo.order.OrderQueryVo;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -60,19 +60,14 @@ public class OrderApiController {
         return Result.ok(pages);
     }
 
-    @ApiOperation(value = "获取订单状态")
-    @GetMapping("auth/getStatusList")
-    public Result getStatusList() {
-        return Result.ok(OrderStatusEnum.getStatusList());
+    @ApiOperation(value = "获取订单统计数据")
+    @PostMapping("inner/getCountMap")
+    public Map<String, Object> getCountMap(@RequestBody OrderCountQueryVo orderCountQueryVo) {
+        return orderService.getCountMap(orderCountQueryVo);
     }
 
-    @ApiOperation("下单,生成二维码")
-    @GetMapping("/createNative/{orderId}")
-    public Result createNative(
-            @ApiParam(name = "orderId", value = "订单id", required = true)
-            @PathVariable("orderId") Long orderId) {
-        Map map = weixinService.createNative(orderId);
-        return Result.ok(map);
-    }
+
+
+
 
 }
